@@ -43,53 +43,9 @@ class App extends React.Component {
 shouldComponentUpdate = (nextProps, nextState) => {
 return (this.props!==nextProps||this.state.count!==nextState.count)
 }
-  get adobeTarget() {return  window.adobe.target}
-  
-
-  applyAdobeTarget(mbox="", offer, selector){
-    //see https://marketing.adobe.com/resources/help/en_US/target/ov2/r_target-atjs-applyoffer.html
-    this.adobeTarget.applyOffer({ mbox, offer, selector });
-  }
-  
-
-  initAdobeTarget(mbox="", params={}, timeout=5000){
-    // see https://marketing.adobe.com/resources/help/en_US/target/ov2/r_target-atjs-getoffer.html
-    return new Promise((resolve, reject) => {
-      this.adobeTarget.getOffer({ mbox, params, timeout, 
-        error: (status, error) => reject(status, error),
-        success: (response) => resolve(response)
-        // success: (response) => this.applyAdobeTarget(mbox)
-       })
-    });   
-    }
-
-  devAutoUpdater(){
-    setInterval(() => {
-      console.log("updated", window.adobe);
-
-      if(useRedux)
-        store.dispatch({ type: "INCREMENT" });
-
-      this.setState({
-        count: this.state.count + 1,
-          stateComponent: null
-       }, () => {
-         let stateComponent = (
-           <NoUpdateNodeWapper>
-             <UpdateNode text="no update node on state" count={this.state.count}/> {useRedux && (<UpdateNode text="NU redux" count={this.props.reduxCount}/>)}
-           </NoUpdateNodeWapper>
-         );
-          this.setState({ stateComponent });
-      });
-    }, 6000);
-    
-  }
-  
-  
   componentDidMount() {
-    //only called on client side.
     // this.devAutoUpdater()
-    console.log(this.adobeTarget)
+    // console.log(this.adobeTarget)
     this.initAdobeTarget("Pdp_mbox_alsolikerecs") //make sure it has mounted first
     // .then(console.log)
     // .catch(console.warn)
@@ -97,6 +53,53 @@ return (this.props!==nextProps||this.state.count!==nextState.count)
       .catch(o=>alert("faileddd:",o))
    
   }
+  
+  get adobeTarget() { return window.adobe.target }
+  
+  /* 
+componentDidMount is only called on client side.
+so initAdobeTarget will only run client side.
+*/
+  initAdobeTarget(mbox="", params={}, timeout=5000) {
+    // see https://marketing.adobe.com/resources/help/en_US/target/ov2/r_target-atjs-getoffer.html
+    return new Promise((resolve, reject) => {
+      this.adobeTarget.getOffer({
+        mbox, params, timeout,
+        error: (status, error) => reject(status, error),
+        success: (response) => resolve(response)
+        // success: (response) => this.applyAdobeTarget(mbox)
+      })
+    });
+  }
+
+  applyAdobeTarget(mbox="", offer, selector) {
+    //see https://marketing.adobe.com/resources/help/en_US/target/ov2/r_target-atjs-applyoffer.html
+    this.adobeTarget.applyOffer({ mbox, offer, selector });
+  }
+  
+  devAutoUpdater() {
+    setInterval(() => {
+      console.log("updated", window.adobe);
+
+      if(useRedux)
+        store.dispatch({ type: "INCREMENT" });
+
+      this.setState({
+        count: this.state.count+1,
+        stateComponent: null
+      }, () => {
+        let stateComponent=(
+          <NoUpdateNodeWapper>
+            <UpdateNode text="no update node on state" count={this.state.count} /> {useRedux&&(<UpdateNode text="NU redux" count={this.props.reduxCount} />)}
+          </NoUpdateNodeWapper>
+        );
+        this.setState({ stateComponent });
+      });
+    }, 6000);
+
+  }
+
+  
   render() {
     // console.log(this.props) const HOCNoUpdateNodeWapperOverride =
     // HOC(NoUpdateNodeWapper); const HOCNoUpdateNodeWapperOverride = (divNode);
