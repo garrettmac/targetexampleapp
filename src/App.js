@@ -44,22 +44,25 @@ shouldComponentUpdate = (nextProps, nextState) => {
 return (this.props!==nextProps||this.state.count!==nextState.count)
 }
   componentDidMount() {
-    // this.devAutoUpdater()
-    // console.log(this.adobeTarget)
+   
+ 
     this.initAdobeTarget("Pdp_mbox_alsolikerecs") //make sure it has mounted first
     // .then(console.log)
     // .catch(console.warn)
       .then(o=>alert("WORKED:",o))
       .catch(o=>alert("faileddd:",o))
    
+      
+       // this.devAutoUpdater()
   }
   
   get adobeTarget() { return window.adobe.target }
   
   /* 
-componentDidMount is only called on client side.
-so initAdobeTarget will only run client side.
-*/
+    @method initAdobeTarget
+    `componentDidMount` is only called on client side.
+     so `initAdobeTarget` will only run client side.
+  */
   initAdobeTarget(mbox="", params={}, timeout=5000) {
     // see https://marketing.adobe.com/resources/help/en_US/target/ov2/r_target-atjs-getoffer.html
     return new Promise((resolve, reject) => {
