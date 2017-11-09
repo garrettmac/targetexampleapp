@@ -24,18 +24,16 @@ const HOCNoUpdateNodeWapperOverride = HOC(AdobeTargetWrapper);
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.renderHeader = this
-.renderHeader.bind(this);
-    this.renderStateExample = this
-.renderStateExample.bind(this);
-    this.renderHOCExample = this
-.renderHOCExample.bind(this);
-    this.renderSCUExample = this
-.renderSCUExample.bind(this);
-    this.renderTargetExample = this
-.renderTargetExample.bind(this);
-    this.renderTargetOverideExample = this
-.renderTargetOverideExample.bind(this);
+    this.renderHeader = this.renderHeader.bind(this);
+    this.renderStateExample = this.renderStateExample.bind(this);
+    this.renderHOCExample = this.renderHOCExample.bind(this);
+    this.renderSCUExample = this.renderSCUExample.bind(this);
+    this.renderTargetExample = this.renderTargetExample.bind(this);
+    this.renderTargetOverideExample = this.renderTargetOverideExample.bind(this);
+    this.initAdobeTarget = this.initAdobeTarget.bind(this);
+    this.applyAdobeTarget = this.applyAdobeTarget.bind(this);
+    
+    
   }
 
   state = {
@@ -43,22 +41,35 @@ class App extends React.Component {
     // stateComponent
   };
 shouldComponentUpdate = (nextProps, nextState) => {
-  // console.log(this.props);
-  // console.log(nextProps);
-  // console.log(this.props === nextProps);
-  // console.log(this.state.count == nextState.count);
-  console.log(this.props !== nextProps)
-  console.log(this.state.count !== nextState.count);//true if new state
-  console.log(this.props !== nextProps || this.state.count !== nextState.count);//true if new state
 return (this.props!==nextProps||this.state.count!==nextState.count)
 }
+  get adobeTarget() {return  window.adobe.target}
+  
 
-  componentDidMount() {
+  applyAdobeTarget(mbox="", offer, selector){
+    //see https://marketing.adobe.com/resources/help/en_US/target/ov2/r_target-atjs-applyoffer.html
+    this.adobeTarget.applyOffer({ mbox, offer, selector });
+  }
+  
+
+  initAdobeTarget(mbox="", params={}, timeout=5000){
+    // see https://marketing.adobe.com/resources/help/en_US/target/ov2/r_target-atjs-getoffer.html
+    return new Promise((resolve, reject) => {
+      this.adobeTarget.getOffer({ mbox, params, timeout, 
+        error: (status, error) => reject(status, error),
+        success: (response) => resolve(response)
+        // success: (response) => this.applyAdobeTarget(mbox)
+       })
+    });   
+    }
+
+  devAutoUpdater(){
     setInterval(() => {
-      console.log("updated");
-      if (useRedux) 
-        store.dispatch({type: "INCREMENT"});
-   
+      console.log("updated", window.adobe);
+
+      if(useRedux)
+        store.dispatch({ type: "INCREMENT" });
+
       this.setState({
         count: this.state.count + 1,
           stateComponent: null
@@ -71,6 +82,20 @@ return (this.props!==nextProps||this.state.count!==nextState.count)
           this.setState({ stateComponent });
       });
     }, 6000);
+    
+  }
+  
+  
+  componentDidMount() {
+    //only called on client side.
+    // this.devAutoUpdater()
+    console.log(this.adobeTarget)
+    this.initAdobeTarget("Pdp_mbox_alsolikerecs") //make sure it has mounted first
+    // .then(console.log)
+    // .catch(console.warn)
+      .then(o=>alert("WORKED:",o))
+      .catch(o=>alert("faileddd:",o))
+   
   }
   render() {
     // console.log(this.props) const HOCNoUpdateNodeWapperOverride =

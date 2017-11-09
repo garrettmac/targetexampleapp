@@ -11,7 +11,7 @@ export default class AdobeTargetWrapper extends Component {
     //  if (global.adobe && global.adobe.target)
     Target = createTargetComponent(Lib);
 
-    let mboxName = "MBOX_ID_HERE";
+    let mboxName="Pdp_mbox_alsolikerecs";
 
     return (
       <Target data-mbox={mboxName}>
