@@ -63,8 +63,8 @@ return (this.props!==nextProps||this.state.count!==nextState.count)
       // .then(o=>alert("WORKED:",o))
       // .catch(o=>alert("faileddd:",o))
    
-      
-       this.devAutoUpdater()
+    // this.setIntervalComponentUpdates()
+       this.setIntervalUpdates()
   }
   
   get adobeTarget() { return window.adobe.target }
@@ -95,29 +95,27 @@ return (this.props!==nextProps||this.state.count!==nextState.count)
     this.adobeTarget.applyOffer({ mbox, offer, selector });
   }
   
-  devAutoUpdater() {
+  setIntervalUpdates() { 
     setInterval(() => {
-      console.log("updated", window.adobe);
-
-      if(useRedux)
-        store.dispatch({ type: "INCREMENT" });
-
-      this.setState({
-        count: this.state.count+1,
-        stateComponent: null
-      }, () => {
-        let stateComponent=(
-          <NoUpdateNodeWapper>
-            <UpdateNode text="no update node on state" count={this.state.count} /> 
-            {useRedux&&(<UpdateNode text="NU redux" count={this.props.reduxCount} />)}
-          </NoUpdateNodeWapper>
-        );
-        this.setState({ stateComponent });
-      });
+      if(useRedux) store.dispatch({ type: "INCREMENT" });
+      this.setState({count: this.state.count+1})
     }, 6000);
-
   }
-
+  
+  
+  
+  setIntervalComponentUpdates() {  
+    let stateComponent=(<NoUpdateNodeWapper>
+                               <UpdateNode text="no update node on state" count={this.state.count} />
+                              { useRedux && (<UpdateNode text="NU redux" count={this.props.reduxCount} />)}
+                        </NoUpdateNodeWapper>);
+    setInterval(() => {
+            this.setState(
+                { stateComponent: null},
+                () => {this.setState({ stateComponent })}
+            );
+    }, 6000);
+  }
   
   render() {
     // console.log(this.props) const HOCNoUpdateNodeWapperOverride =
