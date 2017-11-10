@@ -17,7 +17,8 @@ so only updates if it gets something new
 export default class UpdateNode extends React.PureComponent{
   constructor(props) {
     super(props);
-    this.bg=randomColor()
+    this.bg=randomColor({ luminosity: 'dark', format: 'hsla' })
+
   }
 render(){
   const {text,count} = this.props

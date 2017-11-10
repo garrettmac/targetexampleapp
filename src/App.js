@@ -31,11 +31,7 @@ const HOCNoUpdateNodeWapperOverride = HOC(AdobeTargetWrapper);
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.bg=randomColor({
-      luminosity: 'dark',
-      hue: 'blue',
-      format: 'rgba' // e.g. 'rgba(9, 1, 107, 0.6482447960879654)' 
-    })
+    this.bg=randomColor({luminosity: 'light',hue: 'blue',format: 'rgba'})
     this.renderHeader = this.renderHeader.bind(this);
     this.renderStateExample = this.renderStateExample.bind(this);
     this.shouldComponentUpdateFalse = this.shouldComponentUpdateFalse.bind(this);
