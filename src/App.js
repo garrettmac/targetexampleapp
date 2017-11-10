@@ -158,7 +158,7 @@ return (this.props!==nextProps||this.state.count!==nextState.count)
   }
   //good
   renderTargetGOOD() {
-    
+    // if using redux see https://stackoverflow.com/questions/39681737/react-redux-and-should-component-update-optimisation
     return (
     <Target data-mbox="Pdp_mbox_alsolikerecs">
         <NoUpdateNodeWapper>
