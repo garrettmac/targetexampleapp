@@ -24,6 +24,7 @@ const HOCNoUpdateNodeWapperOverride = HOC(AdobeTargetWrapper);
 class App extends React.Component {
   constructor(props) {
     super(props);
+    this.bg = randomColor()
     this.renderHeader = this.renderHeader.bind(this);
     this.renderStateExample = this.renderStateExample.bind(this);
     this.renderHOCExample = this.renderHOCExample.bind(this);
@@ -47,13 +48,13 @@ return (this.props!==nextProps||this.state.count!==nextState.count)
    
  
     this.initAdobeTarget("Pdp_mbox_alsolikerecs") //make sure it has mounted first
-    // .then(console.log)
-    // .catch(console.warn)
-      .then(o=>alert("WORKED:",o))
-      .catch(o=>alert("faileddd:",o))
+    .then(console.log)
+    .catch(console.warn)
+      // .then(o=>alert("WORKED:",o))
+      // .catch(o=>alert("faileddd:",o))
    
       
-       // this.devAutoUpdater()
+       this.devAutoUpdater()
   }
   
   get adobeTarget() { return window.adobe.target }
@@ -62,6 +63,10 @@ return (this.props!==nextProps||this.state.count!==nextState.count)
     @method initAdobeTarget
     `componentDidMount` is only called on client side.
      so `initAdobeTarget` will only run client side.
+    here you can do a setState to swap a react node to do whatever,
+     and apply the `applyAdobeTarget` only when success.
+     to prevent the whole parent node rerendering issue a
+     react boolean switch could be used though out the entire app
   */
   initAdobeTarget(mbox="", params={}, timeout=5000) {
     // see https://marketing.adobe.com/resources/help/en_US/target/ov2/r_target-atjs-getoffer.html
@@ -107,7 +112,7 @@ return (this.props!==nextProps||this.state.count!==nextState.count)
     // console.log(this.props) const HOCNoUpdateNodeWapperOverride =
     // HOC(NoUpdateNodeWapper); const HOCNoUpdateNodeWapperOverride = (divNode);
     return <div>
-        <center style={{ background: randomColor() }}>
+        <center style={{ background: this.bg }}>
           {/* disabled
             
           */}
