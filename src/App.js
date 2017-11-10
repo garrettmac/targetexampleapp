@@ -13,6 +13,13 @@ import React from "react";
 import UpdateNode from "./UpdateNode";
 import randomColor from "randomcolor";
 
+const rowStyle={
+  flexDirection: "row",
+  justifyContent: "center",
+  alignItems: "center",
+  display: "flex"
+}
+
 const divNode = () => (
   <div></div>
 );
@@ -24,13 +31,16 @@ const HOCNoUpdateNodeWapperOverride = HOC(AdobeTargetWrapper);
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.bg = randomColor()
+    this.bg=randomColor({
+      luminosity: 'dark',
+      hue: 'blue',
+      format: 'rgba' // e.g. 'rgba(9, 1, 107, 0.6482447960879654)' 
+    })
     this.renderHeader = this.renderHeader.bind(this);
     this.renderStateExample = this.renderStateExample.bind(this);
-    this.renderHOCExample = this.renderHOCExample.bind(this);
-    this.renderSCUExample = this.renderSCUExample.bind(this);
+    this.shouldComponentUpdateFalse = this.shouldComponentUpdateFalse.bind(this);
     this.renderTargetExample = this.renderTargetExample.bind(this);
-    this.renderTargetOverideExample = this.renderTargetOverideExample.bind(this);
+    this.renderTargetHOCOverideExample=this.renderTargetHOCOverideExample.bind(this);
     this.initAdobeTarget = this.initAdobeTarget.bind(this);
     this.applyAdobeTarget = this.applyAdobeTarget.bind(this);
     
@@ -98,7 +108,8 @@ return (this.props!==nextProps||this.state.count!==nextState.count)
       }, () => {
         let stateComponent=(
           <NoUpdateNodeWapper>
-            <UpdateNode text="no update node on state" count={this.state.count} /> {useRedux&&(<UpdateNode text="NU redux" count={this.props.reduxCount} />)}
+            <UpdateNode text="no update node on state" count={this.state.count} /> 
+            {useRedux&&(<UpdateNode text="NU redux" count={this.props.reduxCount} />)}
           </NoUpdateNodeWapper>
         );
         this.setState({ stateComponent });
@@ -111,19 +122,23 @@ return (this.props!==nextProps||this.state.count!==nextState.count)
   render() {
     // console.log(this.props) const HOCNoUpdateNodeWapperOverride =
     // HOC(NoUpdateNodeWapper); const HOCNoUpdateNodeWapperOverride = (divNode);
-    return <div>
+ 
+    return (<div>
         <center style={{ background: this.bg }}>
           {/* disabled
             
           */}
+        
+
+      
           {this.renderHeader()}
           {this.renderStateExample()}
-          {this.renderHOCExample()}
-          {this.renderSCUExample()}
+          {this.shouldComponentUpdateFalse()}
           {this.renderTargetExample()}
-          {this.renderTargetOverideExample()}
+        {this.renderTargetHOCOverideExample()}
+
         </center>
-      </div>;
+      </div>);
   }
   renderHeader() {
     return (
@@ -140,29 +155,30 @@ return (this.props!==nextProps||this.state.count!==nextState.count)
   renderStateExample() {
     return (
       <div>
+        <h2>renderStateExample /  UpdateNode</h2>
         <h3>normally managed state</h3>
-        <UpdateNode text="state count" count={this.state.count}/> {useRedux && (<UpdateNode text="redux count" count={this.props.reduxCount}/>)}
+        <div style={rowStyle}>
+        <UpdateNode text="state count" count={this.state.count}/> 
+        {useRedux && (<UpdateNode text="redux count" count={this.props.reduxCount}/>)}
+        </div>
       </div>
     );
   }
-  renderHOCExample() {
+
+  shouldComponentUpdateFalse() {
     return (
       <div>
-        <hr/>
-        <h3>inside HOC to Override shouldComponentUpdate</h3>
-        <HOCNoUpdateNodeWapperOverride>
-          <UpdateNode text="state count" count={this.state.count}/> {useRedux && (<UpdateNode text="redux count" count={this.props.reduxCount}/>)}
-        </HOCNoUpdateNodeWapperOverride>
-      </div>
-    );
-  }
-  renderSCUExample() {
-    return (
-      <div>
+       <hr/>
+        <h2>shouldComponentUpdateFalse / NoUpdateNodeWapper</h2>
         <h3>shouldComponentUpdate - no</h3>
         <NoUpdateNodeWapper>
-          <UpdateNode text="state count" count={this.state.count}/> {useRedux && (<UpdateNode text="redux count" count={this.props.reduxCount}/>)}
+                <div style={rowStyle}>
+          <UpdateNode text="state count" count={this.state.count}/> 
+          {useRedux && (<UpdateNode text="redux count" count={this.props.reduxCount}/>)}
+        </div>
         </NoUpdateNodeWapper>
+
+
         <hr/>
       </div>
     );
@@ -170,20 +186,29 @@ return (this.props!==nextProps||this.state.count!==nextState.count)
   renderTargetExample() {
     return (
       <div>
+       <hr/>
+        <h2>renderTargetExample / AdobeTargetWrapper</h2>
         <h3>AdobeTargetWrapper</h3>
         <AdobeTargetWrapper>
-          <UpdateNode text="state count" count={this.state.count}/> {useRedux && (<UpdateNode text="redux count" count={this.props.reduxCount}/>)}
+        <div style={rowStyle}>
+          <UpdateNode text="state count" count={this.state.count}/> 
+          {useRedux && (<UpdateNode text="redux count" count={this.props.reduxCount}/>)}
+      </div>
         </AdobeTargetWrapper>
       </div>
     );
   }
-  renderTargetOverideExample() {
+  renderTargetHOCOverideExample() {
     return (
       <div>
         <hr/>
+        <h2>renderTargetHOCOverideExample / HOCNoUpdateNodeWapperOverride</h2>
         <h3>inside HOC to Override shouldComponentUpdate</h3>
         <HOCNoUpdateNodeWapperOverride>
-          <UpdateNode text="state count" count={this.state.count}/> {useRedux && (<UpdateNode text="redux count" count={this.props.reduxCount}/>)}
+        <div style={rowStyle}>
+          <UpdateNode text="state count" count={this.state.count}/> 
+          {useRedux && (<UpdateNode text="redux count" count={this.props.reduxCount}/>)}
+      </div>
         </HOCNoUpdateNodeWapperOverride>
       </div>
     );

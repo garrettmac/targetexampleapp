@@ -21,7 +21,8 @@ export default class UpdateNode extends React.PureComponent{
   }
 render(){
   const {text,count} = this.props
-  return (<div style={{ background: this.bg }}>
+  
+  return (<div style={{ alignText: "center", width: "40%", height: "50px", background: this.bg }}>
          <p>{text}: {count}</p>
        </div>)
 }

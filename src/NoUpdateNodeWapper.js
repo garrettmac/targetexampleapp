@@ -5,15 +5,10 @@ import { h } from "preact";
 import randomColor from "randomcolor";
 
 export default class NoUpdateNodeWapper extends Component {
-constructor(props){
-  super(props);
-  this.bg=randomColor()
-}
-  shouldComponentUpdate() {
-           return false;
-         }
+  
+  shouldComponentUpdate() {return false;}
          render() {
-           return (<div style={{ background: this.bg }}>
+           return (<div>
                {this.props.children}
          </div>);
          }
