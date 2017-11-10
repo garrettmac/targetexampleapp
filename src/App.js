@@ -12,6 +12,10 @@ import NoUpdateNodeWapper from "./NoUpdateNodeWapper";
 import React from "react";
 import UpdateNode from "./UpdateNode";
 import randomColor from "randomcolor";
+import createTargetComponent from "@adobe/target-react-component";
+
+//good
+let Target=createTargetComponent(React);
 
 const rowStyle={
   flexDirection: "row",
@@ -24,6 +28,9 @@ const divNode = () => (
   <div></div>
 );
 
+
+
+  
 const HOCNoUpdateNodeWapperOverride = HOC(AdobeTargetWrapper);
 
 // class App extends React.PureComponent {
@@ -39,6 +46,8 @@ class App extends React.Component {
     this.renderTargetHOCOverideExample=this.renderTargetHOCOverideExample.bind(this);
     this.initAdobeTarget = this.initAdobeTarget.bind(this);
     this.applyAdobeTarget = this.applyAdobeTarget.bind(this);
+    this.renderTargetGOOD=this.renderTargetGOOD.bind(this);
+    this.renderTargetBAD=this.renderTargetBAD.bind(this);
     
     
   }
@@ -120,16 +129,18 @@ return (this.props!==nextProps||this.state.count!==nextState.count)
     return (<div>
         <center style={{ background: this.bg }}>
           {/* disabled
-            
+              {this.renderStateExample()}
+          {this.shouldComponentUpdateFalse()}
+         
+        {this.renderTargetHOCOverideExample()}
+        {this.renderTargetExample()}
+        {this.renderTargetBAD()}
           */}
+        {this.renderTargetGOOD()}
         
 
       
           {this.renderHeader()}
-          {this.renderStateExample()}
-          {this.shouldComponentUpdateFalse()}
-          {this.renderTargetExample()}
-        {this.renderTargetHOCOverideExample()}
 
         </center>
       </div>);
@@ -145,6 +156,27 @@ return (this.props!==nextProps||this.state.count!==nextState.count)
       </h1>
     );
   }
+  //good
+  renderTargetGOOD() {
+    
+    return (
+    <Target data-mbox="Pdp_mbox_alsolikerecs">
+        <NoUpdateNodeWapper>
+      <UpdateNode text="state count" count={this.state.count} /> 
+        </NoUpdateNodeWapper>
+    </Target>
+    );
+  }
+  //BAD
+  renderTargetBAD() {
+    return (
+    <AdobeTargetWrapper>
+        <NoUpdateNodeWapper>
+      <UpdateNode text="state count" count={this.state.count} /> 
+        </NoUpdateNodeWapper>
+    </AdobeTargetWrapper>
+    );
+  }
 
   renderStateExample() {
     return (
@@ -152,7 +184,7 @@ return (this.props!==nextProps||this.state.count!==nextState.count)
         <h2>renderStateExample /  UpdateNode</h2>
         <h3>normally managed state</h3>
         <div style={rowStyle}>
-        <UpdateNode text="state count" count={this.state.count}/> 
+        
         {useRedux && (<UpdateNode text="redux count" count={this.props.reduxCount}/>)}
         </div>
       </div>
